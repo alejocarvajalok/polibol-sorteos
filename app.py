@@ -43,10 +43,11 @@ def limpiar_comentarios(texto):
 
                 posible = lineas[j]
 
-                # Ignorar basura
+                # Ignorar timestamps
                 if re.match(r'^\d+\s?(h|min|d)$', posible):
                     continue
 
+                # Ignorar líneas basura
                 if posible in [
                     "Responder",
                     "Editado"
