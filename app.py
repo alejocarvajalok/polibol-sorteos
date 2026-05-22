@@ -19,7 +19,7 @@ st.markdown("""
         text-align: center;
         font-size: 42px;
         font-weight: bold;
-        color: white;
+        color: black;
         margin-bottom: 10px;
     }
 
@@ -44,8 +44,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.image("LOGO-POLIBOL-WEB.png", width=300)
+
 st.markdown(
-    '<div class="titulo">🎉 Sorteador Polibol</div>',
+    '<div class="titulo">Sorteador Polibol</div>',
     unsafe_allow_html=True
 )
 
