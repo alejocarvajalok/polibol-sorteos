@@ -4,16 +4,60 @@ import random
 
 st.set_page_config(
     page_title="Sorteador Polibol",
+    page_icon="🎉",
     layout="centered"
 )
 
-st.title("🎉 Sorteador de Instagram - Polibol")
+st.markdown("""
+    <style>
 
-st.markdown("Pegá los comentarios copiados directamente desde Instagram.")
+    .main {
+        background-color: #0e1117;
+    }
+
+    .titulo {
+        text-align: center;
+        font-size: 42px;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 10px;
+    }
+
+    .subtitulo {
+        text-align: center;
+        color: #b0b3b8;
+        margin-bottom: 30px;
+    }
+
+    .ganador-box {
+        padding: 20px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #ffb703, #fb8500);
+        color: black;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="titulo">🎉 Sorteador Polibol</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="subtitulo">Sorteos transparentes para Instagram</div>',
+    unsafe_allow_html=True
+)
 
 texto = st.text_area(
-    "Comentarios",
-    height=400
+    "📋 Pegá acá los comentarios copiados desde Instagram",
+    height=400,
+    placeholder="Pegá aquí los comentarios..."
 )
 
 def limpiar_comentarios(texto):
@@ -132,7 +176,15 @@ if st.button("Procesar comentarios"):
 
         st.balloons()
 
-        st.success(f"🥇 Ganador: @{ganador}")
+        st.markdown(
+    f'''
+    <div class="ganador-box">
+        🏆 GANADOR <br><br>
+        @{ganador}
+    </div>
+    ''',
+    unsafe_allow_html=True
+)
 
         st.info(f"🥈 Suplente 1: @{suplente_1}")
 
