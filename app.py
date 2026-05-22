@@ -8,11 +8,12 @@ st.title("🎉 Sorteador de Instagram - Polibol")
 
 texto = st.text_area(
     "Pegá acá los comentarios copiados desde Instagram",
-    height=300
+    height=400
 )
 
 def limpiar_comentarios(texto):
-    lineas = texto.split("\n")
+
+    lineas = [l.strip() for l in texto.split("\n") if l.strip()]
 
     participantes = {}
 
@@ -20,31 +21,43 @@ def limpiar_comentarios(texto):
 
     while i < len(lineas):
 
-        linea = lineas[i].strip()
+        linea = lineas[i]
 
-        # Detectar posible username
-        if (
-            linea
-            and " " not in linea
-            and not linea.endswith("h")
-            and "Foto del perfil" not in linea
-            and "Responder" not in linea
-            and "Me gusta" not in linea
-        ):
+        # Detectar inicio de comentario
+        if linea.startswith("Foto del perfil de"):
 
-            usuario = linea
-
-            comentario = ""
-
+            # Username debería estar 1 línea abajo
             if i + 1 < len(lineas):
-                comentario = lineas[i + 1]
 
-            menciones = re.findall(r'@\w+', comentario)
+                usuario = lineas[i + 1]
 
-            if len(menciones) >= 2:
+                comentario = ""
 
-                if usuario not in participantes:
-                    participantes[usuario] = comentario
+                # Buscar comentario real en próximas líneas
+                for j in range(i + 2, min(i + 6, len(lineas))):
+
+                    posible = lineas[j]
+
+                    # Ignorar timestamps
+                    if re.match(r'^\d+\s?(h|min|d)$', posible):
+                        continue
+
+                    # Ignorar líneas basura
+                    if posible in ["Responder", "Editado"]:
+                        continue
+
+                    comentario = posible
+                    break
+
+                menciones = re.findall(r'@\w+', comentario)
+
+                # Validar mínimo 2 menciones
+                if len(menciones) >= 2:
+
+                    # Evitar duplicados
+                    if usuario not in participantes:
+
+                        participantes[usuario] = comentario
 
         i += 1
 
@@ -56,8 +69,9 @@ if st.button("Procesar comentarios"):
 
     st.subheader("✅ Participantes válidos")
 
-    for usuario in participantes:
-        st.write(f"@{usuario}")
+    for usuario, comentario in participantes.items():
+
+        st.write(f"@{usuario} → {comentario}")
 
     st.success(f"Total válidos: {len(participantes)}")
 
