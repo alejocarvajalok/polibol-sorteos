@@ -147,4 +147,3 @@ if st.button("Procesar comentarios"):
             nuevo_ganador = usuarios[0]
 
             st.warning(f"Nuevo ganador: @{nuevo_ganador}")
-```
