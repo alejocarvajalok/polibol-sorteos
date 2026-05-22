@@ -29,17 +29,18 @@ st.markdown("""
         margin-bottom: 30px;
     }
 
-    .ganador-box {
-        padding: 20px;
-        border-radius: 15px;
-        background: linear-gradient(135deg, #ffb703, #fb8500);
-        color: black;
-        text-align: center;
-        font-size: 50px;
-        font-weight: bold;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
+.ganador-box {
+    padding: 20px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #ffb703, #fb8500);
+    color: black;
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 
     </style>
 """, unsafe_allow_html=True)
