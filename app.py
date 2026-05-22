@@ -50,7 +50,7 @@ with col2:
     st.image("LOGO-POLIBOL-WEB.png", width=300)
 
 st.markdown(
-    '<div class="titulo">Sorteador Polibol</div>',
+    '<div class="titulo">Sorteo Polibol</div>',
     unsafe_allow_html=True
 )
 
