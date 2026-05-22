@@ -44,7 +44,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.image("LOGO-POLIBOL-WEB.png", width=300)
+col1, col2, col3 = st.columns([1,2,1])
+
+with col2:
+    st.image("LOGO-POLIBOL-WEB.png", width=300)
 
 st.markdown(
     '<div class="titulo">Sorteador Polibol</div>',
