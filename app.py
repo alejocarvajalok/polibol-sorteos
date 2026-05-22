@@ -1,13 +1,19 @@
+```python
 import streamlit as st
 import re
 import random
 
-st.set_page_config(page_title="Sorteador Polibol")
+st.set_page_config(
+    page_title="Sorteador Polibol",
+    layout="centered"
+)
 
 st.title("🎉 Sorteador de Instagram - Polibol")
 
+st.markdown("Pegá los comentarios copiados directamente desde Instagram.")
+
 texto = st.text_area(
-    "Pegá acá los comentarios copiados desde Instagram",
+    "Comentarios",
     height=400
 )
 
@@ -16,6 +22,7 @@ def limpiar_comentarios(texto):
     lineas = [l.strip() for l in texto.split("\n") if l.strip()]
 
     participantes = {}
+    invalidos = []
 
     i = 0
 
@@ -23,49 +30,68 @@ def limpiar_comentarios(texto):
 
         linea = lineas[i]
 
-        # Detectar inicio de comentario
+        # Detectar inicio bloque comentario
         if linea.startswith("Foto del perfil de"):
 
-            # Username debería estar 1 línea abajo
-            if i + 1 < len(lineas):
+            # Extraer username REAL
+            usuario = linea.replace("Foto del perfil de", "").strip()
 
-                usuario = lineas[i + 1]
+            comentario = ""
 
-                comentario = ""
+            # Buscar comentario real
+            for j in range(i + 1, min(i + 8, len(lineas))):
 
-                # Buscar comentario real en próximas líneas
-                for j in range(i + 2, min(i + 6, len(lineas))):
+                posible = lineas[j]
 
-                    posible = lineas[j]
+                # Ignorar basura
+                if re.match(r'^\d+\s?(h|min|d)$', posible):
+                    continue
 
-                    # Ignorar timestamps
-                    if re.match(r'^\d+\s?(h|min|d)$', posible):
-                        continue
+                if posible in [
+                    "Responder",
+                    "Editado"
+                ]:
+                    continue
 
-                    # Ignorar líneas basura
-                    if posible in ["Responder", "Editado"]:
-                        continue
+                # Ignorar username repetido
+                if posible == usuario:
+                    continue
 
-                    comentario = posible
-                    break
+                comentario = posible
+                break
 
-                menciones = re.findall(r'@\w+', comentario)
+            menciones = re.findall(r'@\w+', comentario)
 
-                # Validar mínimo 2 menciones
-                if len(menciones) >= 2:
+            # Texto SIN menciones
+            texto_limpio = re.sub(r'@\w+', '', comentario).strip()
 
-                    # Evitar duplicados
-                    if usuario not in participantes:
+            # VALIDACIONES
 
-                        participantes[usuario] = comentario
+            if len(menciones) < 2:
+
+                invalidos.append(
+                    f"❌ @{usuario} → menos de 2 menciones"
+                )
+
+            elif len(texto_limpio) < 3:
+
+                invalidos.append(
+                    f"❌ @{usuario} → no comentó figurita"
+                )
+
+            else:
+
+                if usuario not in participantes:
+
+                    participantes[usuario] = comentario
 
         i += 1
 
-    return participantes
+    return participantes, invalidos
 
 if st.button("Procesar comentarios"):
 
-    participantes = limpiar_comentarios(texto)
+    participantes, invalidos = limpiar_comentarios(texto)
 
     st.subheader("✅ Participantes válidos")
 
@@ -75,12 +101,50 @@ if st.button("Procesar comentarios"):
 
     st.success(f"Total válidos: {len(participantes)}")
 
-    if len(participantes) > 0:
+    st.divider()
 
-        ganador = random.choice(list(participantes.keys()))
+    st.subheader("❌ Comentarios inválidos")
 
-        st.subheader("🏆 Ganador")
+    if len(invalidos) == 0:
+
+        st.info("No se encontraron inválidos.")
+
+    else:
+
+        for invalido in invalidos:
+
+            st.write(invalido)
+
+    st.divider()
+
+    if len(participantes) >= 1:
+
+        usuarios = list(participantes.keys())
+
+        random.shuffle(usuarios)
+
+        ganador = usuarios[0]
+
+        suplente_1 = usuarios[1] if len(usuarios) > 1 else "No disponible"
+        suplente_2 = usuarios[2] if len(usuarios) > 2 else "No disponible"
+
+        st.subheader("🏆 Resultado del Sorteo")
 
         st.balloons()
 
-        st.success(f"🎉 @{ganador}")
+        st.success(f"🥇 Ganador: @{ganador}")
+
+        st.info(f"🥈 Suplente 1: @{suplente_1}")
+
+        st.info(f"🥉 Suplente 2: @{suplente_2}")
+
+        st.divider()
+
+        if st.button("🔄 Re-sortear"):
+
+            random.shuffle(usuarios)
+
+            nuevo_ganador = usuarios[0]
+
+            st.warning(f"Nuevo ganador: @{nuevo_ganador}")
+```
